@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api")
 public class TestController {
@@ -21,8 +23,18 @@ public class TestController {
 
 
     public record TestResponse(String id, TestResponseContent content, String[] tags) {
+        public TestResponse {
+            Objects.requireNonNull(id);
+            Objects.requireNonNull(content);
+            Objects.requireNonNull(tags);
+        }
     }
 
     private record TestResponseContent(String title, String imageurl, String smalldesc, String longdesc) {
+        private TestResponseContent {
+            Objects.requireNonNull(title);
+            Objects.requireNonNull(imageurl);
+            Objects.requireNonNull(smalldesc);
+        }
     }
 }
