@@ -1,0 +1,26 @@
+{
+  "title": "Showcase Card",
+  "description": "Information required for portfolio of graphical projects",
+  "properties": {
+    "title": {
+      "description": "The title of the project to showcase",
+      "type": "string"
+    },
+    "imageurl": {
+      "description": "The image URL to load on the card",
+      "type": "string"
+    },
+    "smalldesc": {
+      "description": "Short flavor text",
+      "type": "string"
+    },
+    "longdesc": {
+      "description": "Long flavor text, when card is opened",
+      "type": "string"
+    },
+    "tags": {
+      "description": "The tags of the post",
+      "type": "array"
+    }
+  }
+}
