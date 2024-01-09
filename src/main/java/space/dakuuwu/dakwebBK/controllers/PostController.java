@@ -1,11 +1,11 @@
-package space.dakuuwu.dakwebBK;
+package space.dakuuwu.dakwebBK.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.dakuuwu.dakwebBK.model.Post;
+import space.dakuuwu.dakwebBK.models.Post;
 import space.dakuuwu.dakwebBK.repos.PostsRepository;
 
 import java.util.List;
