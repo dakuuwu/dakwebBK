@@ -1,10 +1,11 @@
-package space.dakuuwu.dakwebBK;
+package space.dakuuwu.dakwebBK.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Objects;
 
 @RestController
@@ -13,13 +14,16 @@ public class TestController {
 
     @GetMapping("/test")
     @ResponseBody
-        public TestResponse reply(){
-        return new TestResponse("t-1", new TestResponseContent("Test Post",
-                "/img.png",
-                "This is a test small description!",
-                "This is a test long description! In this one we will fit more text that might be used when the view allows it! Maybe I can ramble here and explain thought processes." ),
-                new String[]{"Tag1", "Tag2", "Tag3"});
+    public String JWTTest(Principal principal){
+        return "omg hi " + principal.getName();
     }
+//        public TestResponse reply(){
+//        return new TestResponse("t-1", new TestResponseContent("Test Post",
+//                "/img.png",
+//                "This is a test small description!",
+//                "This is a test long description! In this one we will fit more text that might be used when the view allows it! Maybe I can ramble here and explain thought processes." ),
+//                new String[]{"Tag1", "Tag2", "Tag3"});
+//    }
 
 
     public record TestResponse(String id, TestResponseContent content, String[] tags) {

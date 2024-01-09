@@ -2,7 +2,7 @@ package space.dakuuwu.dakwebBK.repos;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import space.dakuuwu.dakwebBK.model.Post;
+import space.dakuuwu.dakwebBK.models.Post;
 
 import java.util.List;
 

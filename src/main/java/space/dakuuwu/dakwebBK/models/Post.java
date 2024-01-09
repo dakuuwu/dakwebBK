@@ -1,4 +1,4 @@
-package space.dakuuwu.dakwebBK.model;
+package space.dakuuwu.dakwebBK.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
