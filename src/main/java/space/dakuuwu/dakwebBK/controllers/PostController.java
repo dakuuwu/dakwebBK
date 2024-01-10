@@ -11,8 +11,9 @@ import space.dakuuwu.dakwebBK.repos.PostsRepository;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 @Validated
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class PostController {
 
     @Autowired

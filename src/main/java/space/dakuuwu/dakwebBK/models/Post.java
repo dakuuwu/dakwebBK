@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
 
+//Structures the data to use.
 @Document(collection = "posts")
 public class Post {
     private String id;
@@ -40,6 +41,7 @@ public class Post {
         this.tags = tags;
     }
 
+    //Inner class defined as a record for ease of use, requires the Post class to work. Structures the content object.
     public record PostContent(String title, String imageurl, String smalldesc, String longdesc) {
         public PostContent {
             Objects.requireNonNull(title);

@@ -8,6 +8,8 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,12 +17,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -28,31 +42,67 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
+    private final UserProperties usrProperties;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys) {
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserProperties usrProperties) {
         this.rsaKeys = rsaKeys;
+        this.usrProperties = usrProperties;
     }
 
     @Bean
-    public InMemoryUserDetailsManager user(){
-        return new InMemoryUserDetailsManager(
-                User.withUsername("Luna")
-                        .password("{noop}password")
-                        .authorities("read").build()
-        );
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
+    //Builds admin user based on application.properties data, app only needs one user.
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails admin = User.builder()
+                .username(usrProperties.username())
+                .password(passwordEncoder()
+                        .encode(usrProperties.password()))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(admin);
+    }
+
+    //Default SFC used for most of the application
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET,"/api/posts").permitAll();
-                    auth.requestMatchers(HttpMethod.GET,"/login/*").permitAll();
+                     auth.requestMatchers(HttpMethod.GET, "/posts").permitAll();//Allows all GET methods on API
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/posts").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-                .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())) //Enables JWT
+                .csrf(csrf -> csrf.disable()) //CSRF disabled
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> {
+                    e.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint());
+                    e.accessDeniedHandler(new BearerTokenAccessDeniedHandler());
+                })
+                .build();
+    }
+
+    //Special SFC used for the token endpoint, allows httpBasic login only for this route
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher(new AntPathRequestMatcher("/token"))
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(HttpMethod.POST, "/token").permitAll();
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/token").permitAll();//Allows POST method for JWT
+                    auth.anyRequest().authenticated();
+                })
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> {
+                    e.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint());
+                    e.accessDeniedHandler(new BearerTokenAccessDeniedHandler());
+                })
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
@@ -62,9 +112,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtEncoder jwtCoder(){
+    JwtEncoder jwtCoder() {
         JWK jwk = new RSAKey.Builder(rsaKeys.pubkey()).privateKey(rsaKeys.privkey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET, PUT, POST, DELETE, OPTIONS"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }

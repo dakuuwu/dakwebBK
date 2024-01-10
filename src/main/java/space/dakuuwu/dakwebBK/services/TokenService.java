@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TokenService {
+    //Service made to handle the generation of Bearer tokens with JWT.
     private final JwtEncoder encoder;
 
 
@@ -20,7 +21,8 @@ public class TokenService {
         this.encoder = encoder;
     }
 
-    public String generateToken(Authentication authentication){
+    //The logic behind token generation. Self signs JWTs. Tokens expire in one hour.
+    public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

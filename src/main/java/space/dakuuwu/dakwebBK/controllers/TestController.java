@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Objects;
 
+//This class is here for legacy purposes. Not instrumental to the project, it was used to test the API functionality.
+
 @RestController
 @RequestMapping("/api")
 public class TestController {
