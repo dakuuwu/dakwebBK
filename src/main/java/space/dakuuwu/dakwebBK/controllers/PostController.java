@@ -17,35 +17,35 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    private PostsRepository postsRepo;
+    private PostsRepository postsRepository;
 
     //C
     @PostMapping("/newpost")
     public ResponseEntity<Post> createPost(@RequestBody Post p) {
-        Post savedPost = postsRepo.save(p);
+        Post savedPost = postsRepository.save(p);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     //R
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> postList = postsRepo.findAll();
+        List<Post> postList = postsRepository.findAll();
         return ResponseEntity.ok(postList);
     }
 
     @GetMapping("/posts/{id}")
     public ResponseEntity<Post> getPostbyID(@PathVariable String id) {
-        return postsRepo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return postsRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     //U
     @PutMapping("/updatepost/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post updatedPost) {
-        return postsRepo.findById(id)
+        return postsRepository.findById(id)
                 .map(existingPost -> {
                     existingPost.setContent(updatedPost.getContent());
                     existingPost.setTags(updatedPost.getTags());
-                    Post savedPost = postsRepo.save(existingPost);
+                    Post savedPost = postsRepository.save(existingPost);
                     return ResponseEntity.ok(savedPost);
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -54,7 +54,7 @@ public class PostController {
     //D
     @DeleteMapping("/deletepost/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable String id) {
-        postsRepo.deleteById(id);
+        postsRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 

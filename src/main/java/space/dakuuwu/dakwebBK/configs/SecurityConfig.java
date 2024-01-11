@@ -42,11 +42,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
-    private final UserProperties usrProperties;
+    private final UserProperties userProperties;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys, UserProperties usrProperties) {
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserProperties userProperties) {
         this.rsaKeys = rsaKeys;
-        this.usrProperties = usrProperties;
+        this.userProperties = userProperties;
     }
 
     @Bean
@@ -58,9 +58,9 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
-                .username(usrProperties.username())
+                .username(userProperties.username())
                 .password(passwordEncoder()
-                        .encode(usrProperties.password()))
+                        .encode(userProperties.password()))
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(admin);
@@ -72,7 +72,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> {
                      auth.requestMatchers(HttpMethod.GET, "/posts").permitAll();//Allows all GET methods on API
-                    auth.requestMatchers(HttpMethod.OPTIONS, "/posts").permitAll();
+                    auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())) //Enables JWT
@@ -121,9 +121,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET, PUT, POST, DELETE, OPTIONS"));
+        configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
