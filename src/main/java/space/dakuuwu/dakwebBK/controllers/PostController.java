@@ -13,17 +13,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @Validated
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class PostController {
 
     @Autowired
     private PostsRepository postsRepository;
 
+    private Boolean keyFieldValidator(Post p) {
+        if (p.getContent().title().isBlank() || p.getContent().title() == null) {
+            return false;
+        } else if (p.getContent().imageurl().isBlank() || p.getContent().imageurl() == null) {
+            return false;
+        } else return p.getTags().length != 0 && p.getTags() != (null);
+    }
+
     //C
     @PostMapping("/newpost")
     public ResponseEntity<Post> createPost(@RequestBody Post p) {
-        Post savedPost = postsRepository.save(p);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+        if (keyFieldValidator(p)) {
+            Post savedPost = postsRepository.save(p);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     //R
@@ -41,14 +54,18 @@ public class PostController {
     //U
     @PutMapping("/updatepost/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post updatedPost) {
-        return postsRepository.findById(id)
-                .map(existingPost -> {
-                    existingPost.setContent(updatedPost.getContent());
-                    existingPost.setTags(updatedPost.getTags());
-                    Post savedPost = postsRepository.save(existingPost);
-                    return ResponseEntity.ok(savedPost);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        if (keyFieldValidator(updatedPost)) {
+            return postsRepository.findById(id)
+                    .map(existingPost -> {
+                        existingPost.setContent(updatedPost.getContent());
+                        existingPost.setTags(updatedPost.getTags());
+                        Post savedPost = postsRepository.save(existingPost);
+                        return ResponseEntity.ok(savedPost);
+                    })
+                    .orElse(ResponseEntity.notFound().build());
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     //D

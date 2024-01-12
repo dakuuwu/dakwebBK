@@ -72,7 +72,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> {
                      auth.requestMatchers(HttpMethod.GET, "/posts").permitAll();//Allows all GET methods on API
-                    auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
+                    auth.requestMatchers(HttpMethod.OPTIONS).permitAll();//Allows OPTIONS for preflight
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())) //Enables JWT
@@ -92,8 +92,8 @@ public class SecurityConfig {
         return http
                 .securityMatcher(new AntPathRequestMatcher("/token"))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST, "/token").permitAll();
-                    auth.requestMatchers(HttpMethod.OPTIONS, "/token").permitAll();//Allows POST method for JWT
+                    auth.requestMatchers(HttpMethod.POST, "/token").permitAll();//Allows POST method for JWT
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/token").permitAll();//Allows OPTIONS for preflight
                     auth.anyRequest().authenticated();
                 })
                 .csrf(csrf -> csrf.disable())
