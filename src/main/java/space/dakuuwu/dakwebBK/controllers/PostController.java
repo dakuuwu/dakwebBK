@@ -19,6 +19,7 @@ public class PostController {
 
     @Autowired
     private PostsRepository postsRepository;
+    @Autowired
     private DataValidationService dvs;
 
     //C
