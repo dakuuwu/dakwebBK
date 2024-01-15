@@ -43,10 +43,12 @@ public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
     private final UserProperties userProperties;
+    private final CORSProperties corsProperties;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys, UserProperties userProperties) {
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserProperties userProperties, CORSProperties corsProperties) {
         this.rsaKeys = rsaKeys;
         this.userProperties = userProperties;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -121,9 +123,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of(corsProperties.allowedOrigins()));
+        configuration.setAllowedHeaders(List.of(corsProperties.allowedHeaders()));
+        configuration.setAllowedMethods(List.of(corsProperties.allowedMethods()));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import space.dakuuwu.dakwebBK.services.TokenService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.OPTIONS, RequestMethod.POST})
 public class AuthController {
     private final TokenService tokenService;
 
