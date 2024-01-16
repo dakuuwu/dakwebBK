@@ -42,12 +42,13 @@ public class Post {
     }
 
     //Inner class defined as a record for ease of use, requires the Post class to work. Structures the content object.
-    public record PostContent(String title, String imageurl, String smalldesc, String longdesc) {
+    public record PostContent(String title, String imageUrl, String toUrl ,String shortDesc, String longDesc) {
         public PostContent {
             Objects.requireNonNull(title);
-            Objects.requireNonNull(imageurl);
-            Objects.requireNonNull(smalldesc);
+            Objects.requireNonNull(imageUrl);
+            Objects.requireNonNull(shortDesc);
         }
+
     }
 
 }

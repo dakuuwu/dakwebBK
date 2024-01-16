@@ -2,25 +2,48 @@
   "title": "Post",
   "description": "Information required for portfolio of graphical projects",
   "properties": {
-    "title": {
+    "id": {
+      "description": "The unique identifier of the post.",
+      "type": "string"
+    },
+    "content": {
       "description": "The title of the project to showcase",
-      "type": "string"
-    },
-    "imageurl": {
-      "description": "The image URL to load on the card",
-      "type": "string"
-    },
-    "smalldesc": {
-      "description": "Short flavor text",
-      "type": "string"
-    },
-    "longdesc": {
-      "description": "Long flavor text, when card is opened",
-      "type": "string"
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "The title of the project to showcase",
+          "type": "string"
+        },
+        "imageUrl": {
+          "description": "The image URL to load on the card",
+          "type": "string"
+        },
+        "toUrl": {
+          "description": "The URL the card redirects to (if appropriate)",
+          "type": "string"
+        },
+        "shortDesc": {
+          "description": "Short flavor text",
+          "type": "string"
+        },
+        "longDesc": {
+          "description": "Long flavor text, when card is opened",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "imageUrl",
+        "shortDesc"
+      ]
     },
     "tags": {
       "description": "The tags of the post",
       "type": "array"
     }
-  }
+  },
+  "required": [
+    "content",
+    "tags"
+  ]
 }

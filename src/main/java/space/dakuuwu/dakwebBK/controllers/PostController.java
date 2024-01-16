@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.dakuuwu.dakwebBK.models.Post;
 import space.dakuuwu.dakwebBK.repos.PostsRepository;
+import space.dakuuwu.dakwebBK.services.DataValidationService;
 
 import java.util.List;
 
@@ -18,19 +19,13 @@ public class PostController {
 
     @Autowired
     private PostsRepository postsRepository;
-
-    private Boolean keyFieldValidator(Post p) {
-        if (p.getContent().title().isBlank() || p.getContent().title() == null) {
-            return false;
-        } else if (p.getContent().imageurl().isBlank() || p.getContent().imageurl() == null) {
-            return false;
-        } else return p.getTags().length != 0 && p.getTags() != (null);
-    }
+    @Autowired
+    private DataValidationService dvs;
 
     //C
     @PostMapping("/newpost")
     public ResponseEntity<Post> createPost(@RequestBody Post p) {
-        if (keyFieldValidator(p)) {
+        if (dvs.keyFieldValidator(p)) {
             Post savedPost = postsRepository.save(p);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
 
@@ -54,7 +49,7 @@ public class PostController {
     //U
     @PutMapping("/updatepost/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post updatedPost) {
-        if (keyFieldValidator(updatedPost)) {
+        if (dvs.keyFieldValidator(updatedPost)) {
             return postsRepository.findById(id)
                     .map(existingPost -> {
                         existingPost.setContent(updatedPost.getContent());
