@@ -3,10 +3,14 @@ package space.dakuuwu.dakwebBK.services;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import space.dakuuwu.dakwebBK.models.Post;
 
+
 class DataValidationServiceTest {
-    private final DataValidationService dvs = new DataValidationService();
+    @Mock
+    private final DataValidationService dvs = Mockito.spy(new DataValidationService());
     private final Post testPost = new Post("ID1-testingDVS", null, null);
 
     @Test
@@ -129,7 +133,7 @@ class DataValidationServiceTest {
                 "");
         Post postCaseFour = new Post ("postCase4",
                 postCaseFourContent,
-                new String[]{"TestTag1, TestTag2"});
+                new String[]{"TestTag1", "TestTag2"});
         Assertions.assertTrue(dvs.keyFieldValidator(postCaseFour));
     }
 
