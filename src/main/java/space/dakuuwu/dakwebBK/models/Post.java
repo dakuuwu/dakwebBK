@@ -2,8 +2,6 @@ package space.dakuuwu.dakwebBK.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Objects;
-
 //Structures the data to use.
 @Document(collection = "posts")
 public class Post {
@@ -32,6 +30,9 @@ public class Post {
     public void setContent(PostContent content) {
         this.content = content;
     }
+    public void setContent(String title, String imageUrl, String toUrl ,String shortDesc, String longDesc) {
+        this.content = new PostContent(title, imageUrl, toUrl, shortDesc, longDesc);
+    }
 
     public String[] getTags() {
         return tags;
@@ -43,12 +44,6 @@ public class Post {
 
     //Inner class defined as a record for ease of use, requires the Post class to work. Structures the content object.
     public record PostContent(String title, String imageUrl, String toUrl ,String shortDesc, String longDesc) {
-        public PostContent {
-            Objects.requireNonNull(title);
-            Objects.requireNonNull(imageUrl);
-            Objects.requireNonNull(shortDesc);
-        }
-
     }
 
 }
