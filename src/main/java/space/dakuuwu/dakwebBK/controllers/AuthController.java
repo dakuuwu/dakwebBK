@@ -1,10 +1,7 @@
 package space.dakuuwu.dakwebBK.controllers;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.dakuuwu.dakwebBK.services.TokenService;
 
 @RestController
@@ -18,7 +15,8 @@ public class AuthController {
 
     //Calls the token generation service.
     @PostMapping("/token")
-    public String token(Authentication authentication) {
+
+    public String token(@RequestHeader(value = "Authorization") String basicAuth, Authentication authentication) {
         return tokenService.generateToken(authentication);
     }
 }

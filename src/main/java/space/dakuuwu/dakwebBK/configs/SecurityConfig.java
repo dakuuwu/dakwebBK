@@ -73,7 +73,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                     auth.requestMatchers(HttpMethod.GET, "/posts").permitAll();//Allows all GET methods on API
+                    auth.requestMatchers(HttpMethod.GET, "/posts").permitAll();//Allows all GET methods on API
                     auth.requestMatchers(HttpMethod.OPTIONS).permitAll();//Allows OPTIONS for preflight
                     auth.anyRequest().authenticated();
                 })
