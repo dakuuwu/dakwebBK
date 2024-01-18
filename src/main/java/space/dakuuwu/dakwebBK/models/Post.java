@@ -30,7 +30,8 @@ public class Post {
     public void setContent(PostContent content) {
         this.content = content;
     }
-    public void setContent(String title, String imageUrl, String toUrl ,String shortDesc, String longDesc) {
+
+    public void setContent(String title, String imageUrl, String toUrl, String shortDesc, String longDesc) {
         this.content = new PostContent(title, imageUrl, toUrl, shortDesc, longDesc);
     }
 
@@ -43,7 +44,7 @@ public class Post {
     }
 
     //Inner class defined as a record for ease of use, requires the Post class to work. Structures the content object.
-    public record PostContent(String title, String imageUrl, String toUrl ,String shortDesc, String longDesc) {
+    public record PostContent(String title, String imageUrl, String toUrl, String shortDesc, String longDesc) {
     }
 
 }

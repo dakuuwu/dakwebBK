@@ -1,6 +1,5 @@
 package space.dakuuwu.dakwebBK.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,10 +16,13 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class PostController {
 
-    @Autowired
-    private PostsRepository postsRepository;
-    @Autowired
-    private DataValidationService dvs;
+    private final PostsRepository postsRepository;
+    private final DataValidationService dvs;
+
+    public PostController(PostsRepository postsRepository, DataValidationService dvs) {
+        this.postsRepository = postsRepository;
+        this.dvs = dvs;
+    }
 
     //C
     @PostMapping("/newpost")
@@ -39,11 +41,6 @@ public class PostController {
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> postList = postsRepository.findAll();
         return ResponseEntity.ok(postList);
-    }
-
-    @GetMapping("/posts/{id}")
-    public ResponseEntity<Post> getPostbyID(@PathVariable String id) {
-        return postsRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     //U

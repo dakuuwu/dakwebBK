@@ -101,7 +101,7 @@ class DataValidationServiceTest {
                 "dakuuwu.space",
                 "Valid Description",
                 "Valid Description but longer");
-        Post postCaseOne = new Post ("postCase1",
+        Post postCaseOne = new Post("postCase1",
                 postCaseOneContent,
                 null);
         Assertions.assertFalse(dvs.keyFieldValidator(postCaseOne));
@@ -111,7 +111,7 @@ class DataValidationServiceTest {
                 "dakuuwu.space",
                 "",
                 "Valid Description but longer");
-        Post postCaseTwo = new Post ("postCase2",
+        Post postCaseTwo = new Post("postCase2",
                 postCaseTwoContent,
                 new String[]{"TestTag1", "Test Tag 2", "", "Test.Tag.4"});
         Assertions.assertFalse(dvs.keyFieldValidator(postCaseTwo));
@@ -121,7 +121,7 @@ class DataValidationServiceTest {
                 "dakuuwu.space",
                 "Valid Description",
                 "");
-        Post postCaseThree = new Post ("postCase3",
+        Post postCaseThree = new Post("postCase3",
                 postCaseThreeContent,
                 new String[]{"TestTag3"});
         Assertions.assertFalse(dvs.keyFieldValidator(postCaseThree));
@@ -131,7 +131,7 @@ class DataValidationServiceTest {
                 "",
                 "Valid Description",
                 "");
-        Post postCaseFour = new Post ("postCase4",
+        Post postCaseFour = new Post("postCase4",
                 postCaseFourContent,
                 new String[]{"TestTag1", "TestTag2"});
         Assertions.assertTrue(dvs.keyFieldValidator(postCaseFour));
